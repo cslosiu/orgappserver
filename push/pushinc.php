@@ -8,7 +8,7 @@ function push_enqueue($postid)
 }
 
 function push_regdevice($username, $devicetoken)
-{
+{ 
     $sql = "insert into push_devices (user_name, aps_token) values (?,?)
         on duplicate key update aps_token = ?";
     dbquery($sql, array($username,$devicetoken,$devicetoken));
