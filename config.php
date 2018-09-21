@@ -42,12 +42,14 @@ function get_pdo()
 function dbquery($sql, $params = array()) 
 {
     // dbquery("insert into..(?,?)", array($p1, $p2) )
+    // return the STATEMENT object.
     $d = get_pdo();
     $s = $d->prepare($sql);
     for($i=0;$i < count($params); $i++) {
         $s->bindValue($i+1, $params[$i]);
     }
     $s->execute();
+    return $s;
 }
 
 session_start();
