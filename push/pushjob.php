@@ -45,7 +45,7 @@ function push($payloadObject, $deviceToken)
 function sendpost($postid)
 {
     $q = "select d.user_name, q.post_id, d.aps_token, p.post_title, p.post_content, p.post_status, p.post_type 
-        from push_devices d, push_queue q, push_to_user u, cms_posts p
+        from `push_devices` d, push_queue q, push_to_user u, cms_posts p
         where d.user_name = u.user_name and p.id = q.post_id 
         and q.post_id = u.post_id and q.post_id = ?";
     $st = dbquery($q,array($postid));
@@ -64,6 +64,31 @@ function sendpost($postid)
         push($payloadObject, $r['aps_token']);
     }
 }
+
+function mark_sent($post_id)
+{
+    $sql = "update push_queue set out_date = current_timestamp where post_id = ?";
+    $st = dbquery($sql, array($post_id));
+    $st->execute();
+}
+
+// process the push queue every this script runs
+function process_queue()
+{
+    // performance: tune this limit #
+    $sql = "SELECT post_id FROM `push_queue`
+        where out_date is null
+        order by in_date
+        limit 10";
+    $st = dbquery($sql);
+    while($r = $st->fetch(PDO::FETCH_ASSOC)) {
+        $pid = $r['post_id'];
+        sendpost($pid);
+        mark_sent($pid);
+    }
+}
+
+process_queue();
 
 
 ?>
