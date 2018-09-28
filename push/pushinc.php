@@ -7,17 +7,17 @@ function push_enqueue($postid)
     dbquery($sql, array($postid));
 }
 
-function push_regdevice($username, $devicetoken)
+function push_regdevice($userid, $devicetoken)
 { 
-    $sql = "insert into push_devices (user_name, aps_token) values (?,?)
+    $sql = "insert into push_devices (user_id, aps_token) values (?,?)
         on duplicate key update aps_token = ?";
-    dbquery($sql, array($username,$devicetoken,$devicetoken));
+    dbquery($sql, array($userid,$devicetoken,$devicetoken));
 }
 
-function push_to_user($postid, $users = array())
+function push_to_user($postid, $userids = array())
 {
-    $sql = "insert into push_to_user (post_id, user_name) values (?,?)";
-    foreach ($users as $user) {
+    $sql = "insert into push_to_user (post_id, user_id) values (?,?)";
+    foreach ($userids as $user) {
         dbquery($sql, array($postid, $user));
     }
 }

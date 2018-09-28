@@ -44,9 +44,9 @@ function push($payloadObject, $deviceToken)
 
 function sendpost($postid)
 {
-    $q = "select d.user_name, q.post_id, d.aps_token, p.post_title, p.post_content, p.post_status, p.post_type 
+    $q = "select q.post_id, d.aps_token, p.post_title, p.post_content, p.post_status, p.post_type 
         from `push_devices` d, push_queue q, push_to_user u, cms_posts p
-        where d.user_name = u.user_name and p.id = q.post_id 
+        where d.user_id = u.user_id and p.id = q.post_id 
         and q.post_id = u.post_id and q.post_id = ?";
     $st = dbquery($q,array($postid));
     while($r = $st->fetch(PDO::FETCH_ASSOC)) {

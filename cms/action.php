@@ -17,7 +17,8 @@ if ($action == 'insert-post') {
     if ($users) {
         push_enqueue($postid);
         $userarray = explode(',',$users);
-        push_to_user($postid,$userarray);
+        $ids = userid_from_userlogin($userarray);
+        push_to_user($postid,$ids);
     }
     redirect("listpost.php");
 }

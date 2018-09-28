@@ -16,6 +16,19 @@ function insert_post($title,$content,$type)
     return $h->lastInsertId();
 }
 
+// convert an array of user-logins to user-ids
+function userid_from_userlogin($logins)
+{
+    $ids = array();
+    $sql = "select user_id from cms_users where user_login = ?";
+    foreach($logins as $login) {
+        $st = dbquery($sql, array($login));
+        $id = $st->fetchColumn();
+        array_push($ids, $id);
+    }
+    return $ids;
+}
+
 function redirect($url) 
 {
     header("Location: $url");
