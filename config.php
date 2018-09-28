@@ -21,22 +21,28 @@ function exception_handler($exception) {
   
 set_exception_handler('exception_handler');
 
+$_pdo_ = null;
+
 // db
 function get_pdo()
 {
     global $config;
-    $db = null;
-    try {
-        $db = new PDO($config['dsn'], $config['db_username'],$config['db_password']);
-        //$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_SILENT);//Suggested to uncomment on production websites
-        $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);//Suggested to comment on production websites
-        $db->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
-    } 
-    catch(PDOException $e) {
-        echo '<p class="bg-danger">'.$e->getMessage().'</p>';
-        return null;
-    } 
-    return $db;
+    global $_pdo_;
+    if (!$_pdo_) {
+        $db = null;
+        try {
+            $db = new PDO($config['dsn'], $config['db_username'],$config['db_password']);
+            //$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_SILENT);//Suggested to uncomment on production websites
+            $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);//Suggested to comment on production websites
+            $db->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
+        } 
+        catch(PDOException $e) {
+            echo '<p class="bg-danger">'.$e->getMessage().'</p>';
+            return null;
+        } 
+        $_pdo_ = $db;
+    }
+    return $_pdo_;
 }
 
 function dbquery($sql, $params = array()) 
